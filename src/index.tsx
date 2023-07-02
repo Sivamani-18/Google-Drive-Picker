@@ -9,7 +9,7 @@ import useInjectScript from './useInjectScript';
 declare let google: any;
 declare let window: any;
 
-export default function GoogleDrivePicker(): [
+export function GoogleDrivePicker(): [
   (config: PickerConfiguration) => boolean | undefined,
   AuthResult | undefined
 ] {
@@ -159,3 +159,5 @@ export default function GoogleDrivePicker(): [
 
   return [openPicker, authRes];
 }
+
+export default GoogleDrivePicker;
