@@ -2,6 +2,7 @@
 
 This is a custom hook that allows you to integrate the Google Drive Picker functionality into your React application. The Google Drive Picker enables users to select files from their Google Drive account and retrieve the selected files for further processing.
 
+## [Demo Link](https://codesandbox.io/s/google-drive-picker-drfv2t?file=/src/App.tsx).
 ## Installation
 
 You can install the `google-drive-picker` package using npm or Yarn:
@@ -60,7 +61,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
+      <h1>Google Drive Picker</h1>
       <div>
         <button onClick={handlePickerOpen}>Open Google Drive Picker</button>
         {authRes && <div>Authenticated: {authRes.access_token}</div>}
