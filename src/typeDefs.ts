@@ -1,13 +1,13 @@
-export type AuthResult = {
+export interface AuthResult {
   access_token: string;
   authuser: string;
   expires_in: number;
   prompt: string;
   scope: string;
   token_type: string;
-};
+}
 
-export type DocCallback = {
+export interface DocCallback {
   description: string;
   downloadUrl?: string;
   driveSuccess: boolean;
@@ -25,14 +25,14 @@ export type DocCallback = {
   type: string;
   uploadState?: string;
   url: string;
-};
+}
 
-export type PickerCallback = {
+export interface PickerCallback {
   action: string;
   docs: DocCallback[];
-};
+}
 
-export type PickerConfiguration = {
+export interface PickerConfiguration {
   appId?: string;
   callbackFunction: (data: PickerCallback) => any;
   clientId: string;
@@ -53,7 +53,7 @@ export type PickerConfiguration = {
   token?: string;
   viewId?: ViewIdOptions;
   viewMimeTypes?: string;
-};
+}
 
 export type ViewIdOptions =
   | 'DOCUMENTS'

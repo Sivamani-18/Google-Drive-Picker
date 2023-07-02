@@ -20,38 +20,50 @@ yarn add google-drive-picker
 Import the necessary dependencies and the **__GoogleDrivePicker__** hook:
 
 ```shell
-import { useEffect } from 'react';
+import from 'react';
 import GoogleDrivePicker from 'google-drive-picker';
 ```
 
 Create a function component and use the **__GoogleDrivePicker__** hook:
 
 ```shell
-function App() {
-  const [openPicker, authResponse] = GoogleDrivePicker();
+export default function App() {
+  const [openPicker, authResult] = GoogleDrivePicker();
 
-  const handleOpenPicker = () => {
-    openPicker({
-      clientId: "your-client-id",
-      developerKey: "your-developer-key",
-      // other configuration options
-      callbackFunction: (data) => {
-        if (data.action === 'cancel') {
-          console.log('User clicked cancel/close button');
+  const handlePickerOpen = () => {
+    const config = {
+      callbackFunction: (data: any) => {
+        if (data.action === "cancel") {
+          console.log("User clicked cancel/close button");
         }
         console.log(data);
       },
-    });
-  }
+      clientId: "YOUR_CLIENT_ID",
+      developerKey: "YOUR_DEVELOPER_KEY",
+      token: "YOUR_GOOGLE_DRIVE_TOKEN"
+      // Other configuration options...
+    };
+
+    openPicker(config);
+  };
+
+  const handleAuthResult = (authResult: any) => {
+    // Handle the authentication result
+    console.log(authResult);
+  };
+
+  handleAuthResult(authResult); // Calling handleAuthResult
 
   return (
-    <div>
-      <button onClick={() => handleOpenPicker()}>Open Picker</button>
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <div>
+        <button onClick={handlePickerOpen}>Open Google Drive Picker</button>
+        {authResult && <div>Authenticated: {authResult.access_token}</div>}
+      </div>
     </div>
   );
 }
-
-export default App;
 ```
 
 Customize the **__handleOpenPicker__** function and the configuration options according to your needs. You will need to provide the **__clientId__** and **__developerKey__** values, which you can obtain from the Google API Console.

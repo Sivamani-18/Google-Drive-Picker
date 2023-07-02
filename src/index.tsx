@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AuthResult,
   defaultConfiguration,
@@ -9,7 +9,7 @@ import useInjectScript from './useInjectScript';
 declare let google: any;
 declare let window: any;
 
-export function GoogleDrivePicker(): [
+export default function GoogleDrivePicker(): [
   (config: PickerConfiguration) => boolean | undefined,
   AuthResult | undefined
 ] {
@@ -23,6 +23,30 @@ export function GoogleDrivePicker(): [
   const [openAfterAuth, setOpenAfterAuth] = useState(false);
   const [pickerApiLoaded, setPickerApiLoaded] = useState(false);
   const defaultScopes = ['https://www.googleapis.com/auth/drive.readonly'];
+
+  const openPicker = (config: PickerConfiguration) => {
+    setConfig(config);
+
+    if (!config.token) {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: config.clientId,
+        scope: (config.customScopes
+          ? [...defaultScopes, ...config.customScopes]
+          : defaultScopes
+        ).join(' '),
+        callback: (tokenResponse: AuthResult) => {
+          setAuthRes(tokenResponse);
+          createPicker({ ...config, token: tokenResponse.access_token });
+        },
+      });
+
+      client.requestAccessToken();
+    }
+
+    if (config.token && loaded && !error && pickerApiLoaded) {
+      return createPicker(config);
+    }
+  };
 
   useEffect(() => {
     if (loaded && !error && loadedGsi && !errorGsi && !pickerApiLoaded) {
@@ -133,31 +157,5 @@ export function GoogleDrivePicker(): [
     setPickerApiLoaded(true);
   };
 
-  const openPicker = (config: PickerConfiguration) => {
-    setConfig(config);
-
-    if (!config.token) {
-      const client = google.accounts.oauth2.initTokenClient({
-        client_id: config.clientId,
-        scope: (config.customScopes
-          ? [...defaultScopes, ...config.customScopes]
-          : defaultScopes
-        ).join(' '),
-        callback: (tokenResponse: AuthResult) => {
-          setAuthRes(tokenResponse);
-          createPicker({ ...config, token: tokenResponse.access_token });
-        },
-      });
-
-      client.requestAccessToken();
-    }
-
-    if (config.token && loaded && !error && pickerApiLoaded) {
-      return createPicker(config);
-    }
-  };
-
   return [openPicker, authRes];
 }
-
-export default GoogleDrivePicker;
