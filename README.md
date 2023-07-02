@@ -20,7 +20,6 @@ yarn add google-drive-picker
 Import the necessary dependencies and the **__GoogleDrivePicker__** hook:
 
 ```shell
-import from 'react';
 import GoogleDrivePicker from 'google-drive-picker';
 ```
 
