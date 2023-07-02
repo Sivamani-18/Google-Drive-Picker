@@ -1,6 +1,6 @@
 # Google Drive Picker
 
-### The Google Drive Picker API allows you to integrate Google Drive file selection into your web application. With the picker, users can browse their Google Drive files and select one or more files to be used by your application.
+ The Google Drive Picker allows you to integrate Google Drive file selection into your web application. With the picker, users can browse their Google Drive files and select one or more files to be used by your application.
 
 To get started with the Google Drive Picker API, you'll need to perform the following steps:
 
