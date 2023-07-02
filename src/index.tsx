@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AuthResult,
   defaultConfiguration,
@@ -24,9 +24,46 @@ export default function GoogleDrivePicker(): [
   const [pickerApiLoaded, setPickerApiLoaded] = useState(false);
   const defaultScopes = ['https://www.googleapis.com/auth/drive.readonly'];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let picker: any;
+
+  // get the apis from googleapis
+  useEffect(() => {
+    if (loaded && !error && loadedGsi && !errorGsi && !pickerApiLoaded) {
+      loadApis();
+    }
+  }, [loaded, error, loadedGsi, errorGsi, pickerApiLoaded]);
+
+  // use effect to open picker after auth
+  useEffect(() => {
+    if (
+      openAfterAuth &&
+      config.token &&
+      loaded &&
+      !error &&
+      loadedGsi &&
+      !errorGsi &&
+      pickerApiLoaded
+    ) {
+      createPicker(config);
+      setOpenAfterAuth(false);
+    }
+  }, [
+    openAfterAuth,
+    config.token,
+    loaded,
+    error,
+    loadedGsi,
+    errorGsi,
+    pickerApiLoaded,
+  ]);
+
+  // open the picker
   const openPicker = (config: PickerConfiguration) => {
+    // global scope given conf
     setConfig(config);
 
+    // if we didnt get token generate token.
     if (!config.token) {
       const client = google.accounts.oauth2.initTokenClient({
         client_id: config.clientId,
@@ -43,60 +80,43 @@ export default function GoogleDrivePicker(): [
       client.requestAccessToken();
     }
 
+    // if we have token and everything is loaded open the picker
     if (config.token && loaded && !error && pickerApiLoaded) {
       return createPicker(config);
     }
   };
 
-  useEffect(() => {
-    if (loaded && !error && loadedGsi && !errorGsi && !pickerApiLoaded) {
-      loadApis();
-    }
-  }, [loaded, error, loadedGsi, errorGsi, pickerApiLoaded]);
+  // load the Drive picker api
+  const loadApis = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.gapi.load('auth');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.gapi.load('picker', { callback: onPickerApiLoad });
+  };
 
-  useEffect(() => {
-    if (
-      openAfterAuth &&
-      config.token &&
-      loaded &&
-      !error &&
-      loadedGsi &&
-      !errorGsi &&
-      pickerApiLoaded
-    ) {
-      createPicker(config);
-      setOpenAfterAuth(false);
-    }
-  }, [
-    config.token,
-    error,
-    errorGsi,
-    loaded,
-    loadedGsi,
-    openAfterAuth,
-    pickerApiLoaded,
-    config,
-  ]);
+  const onPickerApiLoad = () => {
+    setPickerApiLoaded(true);
+  };
 
   const createPicker = ({
     token,
     appId = '',
-    callbackFunction,
-    customViews,
-    developerKey,
-    disableDefaultView = false,
-    disabled,
-    locale = 'en',
-    multiselect,
-    setIncludeFolders,
-    setOrigin,
-    setParentFolder = '',
-    setSelectFolderEnabled,
-    showUploadFolders,
-    showUploadView = false,
     supportDrives = false,
+    developerKey,
     viewId = 'DOCS',
+    disabled,
+    multiselect,
+    setOrigin,
+    showUploadView = false,
+    showUploadFolders,
+    setParentFolder = '',
     viewMimeTypes,
+    customViews,
+    locale = 'en',
+    setIncludeFolders,
+    setSelectFolderEnabled,
+    disableDefaultView = false,
+    callbackFunction,
   }: PickerConfiguration) => {
     if (disabled) return false;
 
@@ -111,7 +131,7 @@ export default function GoogleDrivePicker(): [
     if (setParentFolder) uploadView.setParent(setParentFolder);
     if (setParentFolder) view.setParent(setParentFolder);
 
-    const pickerBuilder = new google.picker.PickerBuilder()
+    picker = new google.picker.PickerBuilder()
       .setAppId(appId)
       .setOAuthToken(token)
       .setDeveloperKey(developerKey)
@@ -119,42 +139,29 @@ export default function GoogleDrivePicker(): [
       .setCallback(callbackFunction);
 
     if (setOrigin) {
-      pickerBuilder.setOrigin(setOrigin);
+      picker.setOrigin(setOrigin);
     }
 
     if (!disableDefaultView) {
-      pickerBuilder.addView(view);
+      picker.addView(view);
     }
 
     if (customViews) {
-      Object.entries(customViews).forEach(([key, value]) =>
-        pickerBuilder.addView(value)
-      );
+      customViews.map((view) => picker.addView(view));
     }
 
     if (multiselect) {
-      pickerBuilder.enableFeature(google.picker.Feature.MULTISELECT_ENABLED);
+      picker.enableFeature(google.picker.Feature.MULTISELECT_ENABLED);
     }
 
-    if (showUploadView) pickerBuilder.addView(uploadView);
+    if (showUploadView) picker.addView(uploadView);
 
     if (supportDrives) {
-      pickerBuilder.enableFeature(google.picker.Feature.SUPPORT_DRIVES);
+      picker.enableFeature(google.picker.Feature.SUPPORT_DRIVES);
     }
 
-    const picker = pickerBuilder.build();
-    picker.setVisible(true);
+    picker.build().setVisible(true);
     return true;
-  };
-
-  const loadApis = () => {
-    window.gapi.load('auth', () => {
-      window.gapi.load('picker', { callback: onPickerApiLoad });
-    });
-  };
-
-  const onPickerApiLoad = () => {
-    setPickerApiLoaded(true);
   };
 
   return [openPicker, authRes];

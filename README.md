@@ -20,50 +20,55 @@ yarn add google-drive-picker
 Import the necessary dependencies and the **__GoogleDrivePicker__** hook:
 
 ```shell
-import from 'react';
-import GoogleDrivePicker from 'google-drive-picker';
+import React, { useState, useEffect } from "react";
+import GoogleDrivePicker from "google-drive-picker";
 ```
 
 Create a function component and use the **__GoogleDrivePicker__** hook:
 
 ```shell
 export default function App() {
-  const [openPicker, authResult] = GoogleDrivePicker();
+  const [authTocken, setauthTocken] = useState("");
+  const [openPicker, authRes] = GoogleDrivePicker();
 
   const handlePickerOpen = () => {
-    const config = {
-      callbackFunction: (data: any) => {
+    openPicker({
+      clientId: "Your-clientId-key",
+      developerKey: "Your-developerKey",
+      viewId: "DOCS",
+      token: authTocken,
+      showUploadView: true,
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: false,
+      // Other configuration options...
+      callbackFunction: (data) => {
         if (data.action === "cancel") {
           console.log("User clicked cancel/close button");
+        } else if (data.docs && data.docs.length > 0) {
+          console.log(data);
         }
-        console.log(data);
-      },
-      clientId: "YOUR_CLIENT_ID",
-      developerKey: "YOUR_DEVELOPER_KEY",
-      token: "YOUR_GOOGLE_DRIVE_TOKEN"
-      // Other configuration options...
-    };
-
-    openPicker(config);
+      }
+    });
   };
 
-  const handleAuthResult = (authResult: any) => {
-    // Handle the authentication result
-    console.log(authResult);
-  };
-
-  handleAuthResult(authResult); // Calling handleAuthResult
+  useEffect(() => {
+    if (authRes) {
+      setauthTocken(authRes.access_token);
+    }
+  }, [authRes]);
 
   return (
     <div className="App">
       <h1>Hello CodeSandbox</h1>
       <div>
         <button onClick={handlePickerOpen}>Open Google Drive Picker</button>
-        {authResult && <div>Authenticated: {authResult.access_token}</div>}
+        {authRes && <div>Authenticated: {authRes.access_token}</div>}
       </div>
     </div>
   );
 }
+
 ```
 
 Customize the **__handleOpenPicker__** function and the configuration options according to your needs. You will need to provide the **__clientId__** and **__developerKey__** values, which you can obtain from the Google API Console.
@@ -99,6 +104,7 @@ For a complete list of configuration options and their descriptions, please refe
 | `showUploadView`    | Enable/disable the upload view in the picker.                                                                    |
 | `showUploadFolders` | Enable/disable the ability to select folders for uploading files.                                                |
 | `customViews`       | An array of custom views you want to add to the picker. Each view should be an instance of `google.picker.View`. |
+| `customScopes`       | String[] ['https://www.googleapis.com/auth/drive.readonly']. |
 
 For a complete list of `viewId` options and their descriptions, please refer to the code documentation.
 

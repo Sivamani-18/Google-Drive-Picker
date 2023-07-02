@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "lib": ["es2017", "dom"],
-    "jsx": "react",
-    "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./dist",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "jsx": "react",
+    "lib": ["es6", "dom"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "es5"
   },
-  "include": ["src", "tsconfig.json"]
+  "include": ["src"]
 }

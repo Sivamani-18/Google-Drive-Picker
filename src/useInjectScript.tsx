@@ -1,99 +1,106 @@
 import { useEffect, useState } from 'react';
 
+type InjectorType = 'init' | 'loading' | 'loaded' | 'error';
 interface InjectorState {
-  injectorMap: Record<string, InjectorType>;
   queue: Record<string, ((e: boolean) => void)[]>;
+  injectorMap: Record<string, InjectorType>;
   scriptMap: Record<string, HTMLScriptElement>;
 }
 
-let injectorState: InjectorState = {
-  injectorMap: {},
+const injectorState: InjectorState = {
   queue: {},
+  injectorMap: {},
   scriptMap: {},
 };
 
-type InjectorType = 'error' | 'init' | 'loaded' | 'loading';
-
 type StateType = {
-  error: boolean;
   loaded: boolean;
+  error: boolean;
 };
 
 export default function useInjectScript(url: string): [boolean, boolean] {
   const [state, setState] = useState<StateType>({
-    error: false,
     loaded: false,
+    error: false,
   });
 
   useEffect(() => {
-    if (!injectorState.injectorMap[url]) {
+    if (!injectorState.injectorMap?.[url]) {
       injectorState.injectorMap[url] = 'init';
     }
-
-    if (injectorState.injectorMap[url] === 'error') {
+    // check if the script is already cached
+    if (injectorState.injectorMap[url] === 'loaded') {
       setState({
-        error: true,
         loaded: true,
+        error: false,
       });
       return;
     }
 
-    if (injectorState.injectorMap[url] === 'loaded') {
+    // check if the script already errored
+    if (injectorState.injectorMap[url] === 'error') {
       setState({
-        error: false,
         loaded: true,
+        error: true,
       });
       return;
     }
 
     const onScriptEvent = (error: boolean) => {
-      console.log('Script loading', error ? 'failed' : 'succeeded');
-      injectorState.queue[url]?.forEach((job) => job(error));
+      // Get all error or load functions and call them
+      if (error) console.log('error loading the script');
+      injectorState.queue?.[url]?.forEach((job) => job(error));
 
       if (error && injectorState.scriptMap[url]) {
-        document.body.removeChild(injectorState.scriptMap[url]);
+        injectorState.scriptMap?.[url]?.remove();
         injectorState.injectorMap[url] = 'error';
-      } else {
-        injectorState.injectorMap[url] = 'loaded';
-      }
+      } else injectorState.injectorMap[url] = 'loaded';
       delete injectorState.scriptMap[url];
     };
 
     const stateUpdate = (error: boolean) => {
       setState({
-        error,
         loaded: true,
+        error,
       });
     };
 
-    if (!injectorState.scriptMap[url]) {
-      const script = document.createElement('script');
-      script.src = url;
-      script.async = true;
-      script.addEventListener('load', () => onScriptEvent(false));
-      script.addEventListener('error', () => onScriptEvent(true));
-      injectorState.scriptMap[url] = script;
-      injectorState.injectorMap[url] = 'loading';
-      document.body.appendChild(script);
-    }
-
-    if (!injectorState.queue[url]) {
-      injectorState.queue[url] = [stateUpdate];
-    } else {
-      injectorState.queue[url].push(stateUpdate);
-    }
-
-    return () => {
+    if (!injectorState.scriptMap?.[url]) {
+      injectorState.scriptMap[url] = document.createElement('script');
       if (injectorState.scriptMap[url]) {
-        injectorState.scriptMap[url].removeEventListener('load', () =>
+        injectorState.scriptMap[url].src = url;
+        injectorState.scriptMap[url].async = true;
+        // append the script to the body
+        document.body.append(injectorState.scriptMap[url] as Node);
+        injectorState.scriptMap[url].addEventListener('load', () =>
           onScriptEvent(false)
         );
-        injectorState.scriptMap[url].removeEventListener('error', () =>
+        injectorState.scriptMap[url].addEventListener('error', () =>
           onScriptEvent(true)
         );
+        injectorState.injectorMap[url] = 'loading';
       }
+    }
+
+    if (!injectorState.queue?.[url]) {
+      injectorState.queue[url] = [stateUpdate];
+    } else {
+      injectorState.queue?.[url]?.push(stateUpdate);
+    }
+
+    // remove the event listeners
+    return () => {
+      //checks the main injector instance
+      //prevents Cannot read property 'removeEventListener' of null in hot reload
+      if (!injectorState.scriptMap[url]) return;
+      injectorState.scriptMap[url]?.removeEventListener('load', () =>
+        onScriptEvent(true)
+      );
+      injectorState.scriptMap[url]?.removeEventListener('error', () =>
+        onScriptEvent(true)
+      );
     };
   }, [url]);
 
-  return [state.error, state.loaded];
+  return [state.loaded, state.error];
 }
