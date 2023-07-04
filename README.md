@@ -9,7 +9,7 @@ Enable the Google Drive API: Visit the Google API Console (https://console.devel
 
 
 ## [Demo Link](https://codesandbox.io/s/google-drive-picker-drfv2t?file=/src/App.tsx)
-
+## [Full Documentation](https://gist.github.com/Sivamani-18/4d4ff56006d85b48cd63b5928ec7fc66)
 ## Installation
 
 You can install the `google-drive-picker` package using npm or Yarn:
@@ -51,9 +51,6 @@ export default function App() {
       showUploadFolders: true,
       supportDrives: true,
       multiselect: false,
-      // customScopes:['https://www.googleapis.com/auth/drive.readonly'],
-      // setParentFolder:"Your-Folder-ID",
-      // Other configuration options...
       callbackFunction: (data) => {
         if (data.action === "cancel") {
           console.log("User clicked cancel/close button");
@@ -82,12 +79,11 @@ export default function App() {
 }
 
 ```
-
 Customize the **__handleOpenPicker__** function and the configuration options according to your needs. You will need to provide the **__clientId__** and **__developerKey__** values, which you can obtain from the Google API Console.
 
 Run your application and click the "Open Picker" button to open the Google Drive Picker dialog. Once the user selects files or performs an action in the picker, the **__callbackFunction__** will be called with the selected data.
 
-## Configuration Options
+## Configuration Options ## [Full Documentation](https://gist.github.com/Sivamani-18/4d4ff56006d85b48cd63b5928ec7fc66)
 
 The `openPicker` function accepts a configuration object with the following options:
 
@@ -104,36 +100,6 @@ The `openPicker` function accepts a configuration object with the following opti
 | `showUploadFolders` | Enable/disable the ability to select folders for uploading files.                                                |
 | `customViews`       | An array of custom views you want to add to the picker. Each view should be an instance of `google.picker.View`. |
 | `customScopes`       | String[] ['https://www.googleapis.com/auth/drive.readonly']. |
-
-
-
-## PickerConfiguration Props
-For a complete list of configuration options and their descriptions, please refer to the following table:
-
-The `PickerConfiguration` props are used to configure the Google Drive Picker component.
-
-| Prop                      | Type       | Description                                                                                                                        |
-| ------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `token`                   | `string`   | Access token for authentication.                                                                                                   |
-| `appId`                   | `string`   | ID of the Google Drive app.                                                                                                        |
-| `supportDrives`           | `boolean`  | Determines whether the picker should support selecting files from different Google Drive accounts.                                |
-| `developerKey`            | `string`   | Developer key for API access.                                                                                                      |
-| `viewId`                  | `string`   | ID of the default view to display in the picker.                                                                                    |
-| `disabled`                | `boolean`  | Specifies whether the picker is disabled or not.                                                                                   |
-| `multiselect`             | `boolean`  | Enables or disables multi-select mode in the picker.                                                                               |
-| `setOrigin`               | `string`   | Sets the origin URL for the picker.                                                                                                |
-| `showUploadView`          | `boolean`  | Determines whether the upload view should be displayed in the picker.                                                              |
-| `showUploadFolders`       | `boolean`  | Specifies whether folders should be included in the upload view.                                                                   |
-| `setParentFolder`         | `string`   | Sets the parent folder ID for the upload view and default view.                                                                    |
-| `viewMimeTypes`           | `string[]` | An array of MIME types to restrict the file types shown in the picker.                                                              |
-| `customViews`             | `any[]`    | An array of custom views to be added to the picker. Each custom view should be a valid DocsView object from the Picker API.       |
-| `locale`                  | `string`   | The locale code for the picker's interface language (e.g., 'en' for English).                                                       |
-| `setIncludeFolders`       | `boolean`  | Determines whether folders should be included in the default view.                                                                 |
-| `setSelectFolderEnabled`  | `boolean`  | Specifies whether selecting folders is enabled in the default view.                                                                |
-| `disableDefaultView`      | `boolean`  | Determines whether the default view should be disabled.                                                                            |
-| `callbackFunction`        | `Function` | A callback function that will be called when a file or folder is selected. The function will receive the selected item as an argument. |
-
-**Note:** Some props have default values that will be used if not provided.
 
 For a complete list of `viewId` options and their descriptions, please refer to the code documentation.
 

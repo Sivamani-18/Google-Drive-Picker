@@ -1,6 +1,6 @@
 {
   "name": "google-drive-picker",
-  "version": "1.1.25",
+  "version": "1.1.26",
   "private": false,
   "description": "Google Drive Picker is a React Google Drive Picker component that allows you to select document from Google Drive.",
   "main": "dist/bundle.js",
@@ -9,10 +9,6 @@
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Sivamani-18/Google-Drive-Picker.git"
   },
   "keywords": [
     "react-picker",
@@ -24,10 +20,7 @@
   ],
   "author": "Sivamani-18",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Sivamani-18/Google-Drive-Picker/issues"
-  },
-  "homepage": "https://github.com/Sivamani-18/Google-Drive-Picker#readme",
+  "homepage": "https://gist.github.com/Sivamani-18/4d4ff56006d85b48cd63b5928ec7fc66",
   "dependencies": {
     "@types/prop-types": "^15.7.5",
     "@types/react": "^18.2.14",
