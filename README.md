@@ -51,6 +51,8 @@ export default function App() {
       showUploadFolders: true,
       supportDrives: true,
       multiselect: false,
+      // customScopes:['https://www.googleapis.com/auth/drive.readonly'],
+      // setParentFolder:"Your-Folder-ID",
       // Other configuration options...
       callbackFunction: (data) => {
         if (data.action === "cancel") {
@@ -89,19 +91,6 @@ Run your application and click the "Open Picker" button to open the Google Drive
 
 The `openPicker` function accepts a configuration object with the following options:
 
-- `clientId` (required): The Google client ID for your application.
-- `developerKey` (required): The Google developer key for your application.
-- `callbackFunction` (required): The callback function that will be called when the user performs an action in the picker.
-- `viewId` (optional): The default view of the picker. You can choose from various view IDs such as "DOCS", "DOCUMENTS", "FOLDERS", etc.
-- `token` (optional): An access token to skip the authentication process if you already have one.
-- `multiselect` (optional): Enable/disable the ability to select multiple files in the picker.
-- `supportDrives` (optional): Enable/disable support for shared drives.
-- `showUploadView` (optional): Enable/disable the upload view in the picker.
-- `showUploadFolders` (optional): Enable/disable the ability to select folders for uploading files.
-- `customViews` (optional): An array of custom views you want to add to the picker.
-
-For a complete list of configuration options and their descriptions, please refer to the following table:
-
 | Option              | Description                                                                                                      |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `clientId`          | The Google client ID for your application (required).                                                             |
@@ -115,6 +104,36 @@ For a complete list of configuration options and their descriptions, please refe
 | `showUploadFolders` | Enable/disable the ability to select folders for uploading files.                                                |
 | `customViews`       | An array of custom views you want to add to the picker. Each view should be an instance of `google.picker.View`. |
 | `customScopes`       | String[] ['https://www.googleapis.com/auth/drive.readonly']. |
+
+
+
+## PickerConfiguration Props
+For a complete list of configuration options and their descriptions, please refer to the following table:
+
+The `PickerConfiguration` props are used to configure the Google Drive Picker component.
+
+| Prop                      | Type       | Description                                                                                                                        |
+| ------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `token`                   | `string`   | Access token for authentication.                                                                                                   |
+| `appId`                   | `string`   | ID of the Google Drive app.                                                                                                        |
+| `supportDrives`           | `boolean`  | Determines whether the picker should support selecting files from different Google Drive accounts.                                |
+| `developerKey`            | `string`   | Developer key for API access.                                                                                                      |
+| `viewId`                  | `string`   | ID of the default view to display in the picker.                                                                                    |
+| `disabled`                | `boolean`  | Specifies whether the picker is disabled or not.                                                                                   |
+| `multiselect`             | `boolean`  | Enables or disables multi-select mode in the picker.                                                                               |
+| `setOrigin`               | `string`   | Sets the origin URL for the picker.                                                                                                |
+| `showUploadView`          | `boolean`  | Determines whether the upload view should be displayed in the picker.                                                              |
+| `showUploadFolders`       | `boolean`  | Specifies whether folders should be included in the upload view.                                                                   |
+| `setParentFolder`         | `string`   | Sets the parent folder ID for the upload view and default view.                                                                    |
+| `viewMimeTypes`           | `string[]` | An array of MIME types to restrict the file types shown in the picker.                                                              |
+| `customViews`             | `any[]`    | An array of custom views to be added to the picker. Each custom view should be a valid DocsView object from the Picker API.       |
+| `locale`                  | `string`   | The locale code for the picker's interface language (e.g., 'en' for English).                                                       |
+| `setIncludeFolders`       | `boolean`  | Determines whether folders should be included in the default view.                                                                 |
+| `setSelectFolderEnabled`  | `boolean`  | Specifies whether selecting folders is enabled in the default view.                                                                |
+| `disableDefaultView`      | `boolean`  | Determines whether the default view should be disabled.                                                                            |
+| `callbackFunction`        | `Function` | A callback function that will be called when a file or folder is selected. The function will receive the selected item as an argument. |
+
+**Note:** Some props have default values that will be used if not provided.
 
 For a complete list of `viewId` options and their descriptions, please refer to the code documentation.
 
