@@ -7,8 +7,7 @@ dist/
 .env
 
 # Ignore build artifacts
-*.js
-*.js.map
+
 
 # Ignore TypeScript cache
 *.tsbuildinfo
